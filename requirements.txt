@@ -1,0 +1,12 @@
+tweepy
+streamlit
+pandas
+numpy
+nltk
+vaderSentiment
+transformers
+torch
+plotly
+wordcloud
+sqlalchemy
+python-dateutil
