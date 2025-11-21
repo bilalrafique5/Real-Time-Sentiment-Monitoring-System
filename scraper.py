@@ -64,4 +64,36 @@ def search_recent_tweets(api_query:str, limit: int=200) -> pd.DataFrame:
             username=users.get(t.author_id, '')
             content=t.text 
             date=t.created_at.isoformat() if t.created_at else datetime.utcnow().isoformat()
+            clean=clean_text(content)
+            tweets.append({
+                'tweet_id':tweet_id,
+                'query':api_query,
+                'date':date,
+                'username':username,
+                'content':content,
+                'clean_text':clean,
+                'vader_label':None,
+                'vader_score':None,
+                'distil_label':None,
+                'distil_score':None
+            })
             
+            fetched+=1
+        
+        # handle pgination token
+        meta=getattr(resp,'meta',None)
+        next_token=meta.get('next_token') if meta else None
+        if not next_token:
+            break
+        
+    if tweets:
+        df=pd.DataFrame(tweets)
+        insert_tweets_df(df)
+        return df
+    
+    return cached
+
+
+if __name__=='__main__':
+    df=search_recent_tweets("Pakistan economy -is:retweet lang:en",limit=50)
+    print(df.head())
