@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 init_db()
 st.set_page_config(layout='wide', page_title='Real-time Sentiment Monitor')
 
-st.title("Real-time Sentiment Monitoring (Tweepy + SQLite + VADER/DistilBERT)")
+st.title("Real-Time Sentiment Monitoring System (Formerly Twitter)")
 
 with st.sidebar:
     query = st.text_input("Search query", value="Pakistan economy -is:retweet lang:en")

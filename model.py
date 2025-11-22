@@ -1,30 +1,32 @@
-#model.py
+# model.py
 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from transformers import pipeline
 
 class VADERModel:
     def __init__(self):
-        self.analyzer=SentimentIntensityAnalyzer()
-    def predict(self,texts):
-        out=[]
+        self.analyzer = SentimentIntensityAnalyzer()
+
+    def predict(self, texts):
+        out = []
         for t in texts:
-            vs=self.analyer.polarity_scroes(t)
-            comp=vs['compound']
-            if comp>=0.05:
-                label='POSITIVE'
+            vs = self.analyzer.polarity_scores(t)
+            comp = vs['compound']
+
+            if comp >= 0.05:
+                label = 'POSITIVE'
             elif comp <= -0.05:
-                label='NEGATIVE'
+                label = 'NEGATIVE'
             else:
-                label='NEUTRAL'
-            out.append({'label':label,'score':comp,'raw':vs})
+                label = 'NEUTRAL'
+
+            out.append({'label': label, 'score': comp, 'raw': vs})
         return out
-    
+
 
 class DistilBERTModel:
-    def _init__(self,model_name='distilbert-base-uncased-finetuned-sst-2-english'):
-        # pipline automatically downloads model to cache
-        self.pipe=pipeline('sentiment-analysis',model=model_name)
-    def predict(self,texts,batch_size=16):
-        # pipline accepts list input
+    def __init__(self, model_name='distilbert-base-uncased-finetuned-sst-2-english'):
+        self.pipe = pipeline('sentiment-analysis', model=model_name)
+
+    def predict(self, texts, batch_size=16):
         return self.pipe(texts, truncation=True)
