@@ -12,4 +12,5 @@ CACHE_HOURS = 10
 
 MAX_TWEETS_PER_CALL = 15  # Twitter API max is 100
 
+SERVICE_ACCOUNT_PATH = "serviceAccountKey.json"
 

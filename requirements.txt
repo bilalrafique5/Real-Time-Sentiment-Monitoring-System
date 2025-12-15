@@ -8,5 +8,5 @@ transformers
 torch
 plotly
 wordcloud
-sqlalchemy
+firebase-admin
 python-dateutil

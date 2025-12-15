@@ -9,24 +9,21 @@ from datetime import datetime
 
 client = tweepy.Client(bearer_token=API_BEARER_TOKEN, wait_on_rate_limit=True)
 
-def search_recent_tweets(api_query: str, limit: int = 200) -> pd.DataFrame:
-
-    cached = get_cached_tweets(api_query, limit=limit)
-    if not cached.empty and len(cached) >= limit:
+def search_recent_tweets(api_query:str, limit:int=200)->pd.DataFrame:
+    cached=get_cached_tweets(api_query, limit=limit)
+    if not cached.empty and len(cached)>=limit:
         print(f"Returning {len(cached)} cached tweets for '{api_query}'")
         return cached
-
+    
     print(f"Fetching tweets from X API for '{api_query}' (limit={limit})")
-
-    tweets = []
-    next_token = None
-    fetched = 0
-
-    while fetched < limit:
-        to_fetch = min(limit - fetched, MAX_TWEETS_PER_CALL)
-
+    tweets=[]
+    next_token=None
+    fetched=0
+    
+    while fetched<limit:
+        to_fetch=min(limit-fetched, MAX_TWEETS_PER_CALL)
         try:
-            resp = client.search_recent_tweets(
+            resp=client.search_recent_tweets(
                 query=api_query,
                 max_results=to_fetch,
                 expansions=['author_id'],
@@ -35,23 +32,23 @@ def search_recent_tweets(api_query: str, limit: int = 200) -> pd.DataFrame:
                 next_token=next_token
             )
         except Exception as e:
-            print("Tweepy error:", e)
+            print("Tweepy error:",e)
             break
-
+        
         if not resp or not resp.data:
             break
-
-        users = {u.id: u.username for u in resp.includes.get("users", [])}
-
+        
+        users={u.id:u.username for u in resp.includes.get("users",[])}
+        
         for t in resp.data:
-            tid = str(t.id)
+            tid=str(t.id)
             if exists_tweet(tid):
                 continue
-
+            
             tweets.append({
-                'tweet_id': tid,
-                'query': api_query,
-                'date': t.created_at.isoformat() if t.created_at else datetime.utcnow().isoformat(),
+                'tweet_id':tid,
+                'query':api_query,
+                'date':t.reated_at.isoformat() if t.created_at else datetime.utcnow().isoformat(),
                 'username': users.get(t.author_id, ''),
                 'content': t.text,
                 'clean_text': clean_text(t.text),
@@ -60,7 +57,7 @@ def search_recent_tweets(api_query: str, limit: int = 200) -> pd.DataFrame:
                 'distil_label': None,
                 'distil_score': None
             })
-
+            
             fetched += 1
 
         next_token = resp.meta.get("next_token")
@@ -69,7 +66,8 @@ def search_recent_tweets(api_query: str, limit: int = 200) -> pd.DataFrame:
 
     if tweets:
         df = pd.DataFrame(tweets)
-        insert_tweets_df(df)
+        insert_tweets_df(df)  # now inserts into Firestore
         return df
 
     return cached
+                
