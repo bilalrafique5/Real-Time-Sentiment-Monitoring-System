@@ -48,7 +48,7 @@ def search_recent_tweets(api_query:str, limit:int=200)->pd.DataFrame:
             tweets.append({
                 'tweet_id':tid,
                 'query':api_query,
-                'date':t.reated_at.isoformat() if t.created_at else datetime.utcnow().isoformat(),
+                'date':t.created_at.isoformat() if t.created_at else datetime.utcnow().isoformat(),
                 'username': users.get(t.author_id, ''),
                 'content': t.text,
                 'clean_text': clean_text(t.text),

@@ -2,7 +2,7 @@
 import streamlit as st
 import pandas as pd
 from scraper import search_recent_tweets
-from database import init_db, get_cached_tweets, get_conn
+from database import init_db, get_cached_tweets
 from predict_and_update import run_predictions
 from model import VADERModel, DistilBERTModel
 from plotly import express as px
@@ -16,6 +16,7 @@ st.title("Real-Time Sentiment Monitoring System (Formerly Twitter)")
 
 with st.sidebar:
     query = st.text_input("Search query", value="Pakistan economy -is:retweet lang:en")
+    #slider for(default 10, min 10, max 500, step 10)
     limit = st.slider("Number of tweets to fetch", 10, 500, 100, 10)
     models = st.multiselect("Use models", ["VADER", "DistilBERT"], default=["VADER", "DistilBERT"])
     fetch_btn = st.button("Fetch (uses cache when possible)")
