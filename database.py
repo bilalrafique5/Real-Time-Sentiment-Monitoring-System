@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 from config import CACHE_HOURS
 
+
 # Initialize Firebase only once
 cred = credentials.Certificate("serviceAccountKey.json")
 if not firebase_admin._apps:
